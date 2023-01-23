@@ -64,11 +64,11 @@ public class Vacancy {
 
     @Override
     public String toString() {
-        return "Vacancy{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", created=" + creationDate.format(FORMATTER) +
-                '}';
+        return "Vacancy{"
+                + "id=" + id
+                + ", title='" + title + '\''
+                + ", description='" + description + '\''
+                + ", created=" + creationDate.format(FORMATTER)
+                + '}';
     }
 }
