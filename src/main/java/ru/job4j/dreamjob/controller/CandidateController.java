@@ -23,6 +23,12 @@ public class CandidateController {
         return "candidates/create";
     }
 
+    @PostMapping("/create")
+    public String create(@ModelAttribute Candidate candidate) {
+        candidateRepository.save(candidate);
+        return "redirect:/candidates";
+    }
+
     /**
      * Извлекает резюме из репозитория и возвращает на страницу.
      * Если резюме не найдено возвращают страницу с ошибкой.
