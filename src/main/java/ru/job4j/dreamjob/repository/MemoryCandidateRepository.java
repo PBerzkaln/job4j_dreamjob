@@ -7,7 +7,6 @@ import java.util.*;
 
 @Repository
 public class MemoryCandidateRepository implements CandidateRepository {
-    private static final MemoryCandidateRepository INSTANCE = new MemoryCandidateRepository();
 
     private int nextId = 1;
 
@@ -20,10 +19,6 @@ public class MemoryCandidateRepository implements CandidateRepository {
         save(new Candidate(0, "Aleksey", "Middle java developer"));
         save(new Candidate(0, "Igor", "Middle+ java developer"));
         save(new Candidate(0, "Andrey", "Senior java developer"));
-    }
-
-    public static MemoryCandidateRepository getInstance() {
-        return INSTANCE;
     }
 
     @Override
