@@ -6,6 +6,7 @@ import java.util.Objects;
 
 public class Vacancy {
     private int id;
+    private int version;
     private String title;
     private String description;
     private final LocalDateTime creationDate = LocalDateTime.now();
@@ -18,6 +19,14 @@ public class Vacancy {
     }
 
     public Vacancy() {
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public int getId() {

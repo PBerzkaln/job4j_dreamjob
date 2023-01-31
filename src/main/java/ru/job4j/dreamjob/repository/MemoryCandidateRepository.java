@@ -1,16 +1,20 @@
 package ru.job4j.dreamjob.repository;
 
+import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Repository;
 import ru.job4j.dreamjob.model.Candidate;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
+@ThreadSafe
 public class MemoryCandidateRepository implements CandidateRepository {
 
-    private int nextId = 1;
+    private final AtomicInteger nextId = new AtomicInteger(0);
 
-    private final Map<Integer, Candidate> candidates = new HashMap<>();
+    private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
 
     public MemoryCandidateRepository() {
         save(new Candidate(0, "Vasiliy", "Intern java developer"));
@@ -23,8 +27,9 @@ public class MemoryCandidateRepository implements CandidateRepository {
 
     @Override
     public Candidate save(Candidate candidate) {
-        candidate.setId(nextId++);
-        candidates.put(candidate.getId(), candidate);
+        int id = nextId.incrementAndGet();
+        candidate.setId(id);
+        candidates.putIfAbsent(candidate.getId(), candidate);
         return candidate;
     }
 
@@ -35,9 +40,15 @@ public class MemoryCandidateRepository implements CandidateRepository {
 
     @Override
     public boolean update(Candidate candidate) {
-        return candidates.computeIfPresent(candidate.getId(), (id, oldCandidate) ->
-                new Candidate(oldCandidate.getId(), candidate.getName(),
-                        candidate.getDescription())) != null;
+        return candidates.computeIfPresent(candidate.getId(), (id, oldCandidate) -> {
+            if (oldCandidate.getVersion() != candidate.getVersion()) {
+                throw new RuntimeException("Versions are not equal");
+            }
+            Candidate newCandidate = new Candidate(oldCandidate.getId(), candidate.getName(),
+                    candidate.getDescription());
+            newCandidate.setVersion(newCandidate.getVersion() + 1);
+            return newCandidate;
+        }) != null;
     }
 
     @Override

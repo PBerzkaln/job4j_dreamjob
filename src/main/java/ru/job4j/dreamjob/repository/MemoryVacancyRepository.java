@@ -1,16 +1,20 @@
 package ru.job4j.dreamjob.repository;
 
+import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Repository;
 import ru.job4j.dreamjob.model.Vacancy;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
+@ThreadSafe
 public class MemoryVacancyRepository implements VacancyRepository {
 
-    private int nextId = 1;
+    private final AtomicInteger nextId = new AtomicInteger(0);
 
-    private final Map<Integer, Vacancy> vacancies = new HashMap<>();
+    private final Map<Integer, Vacancy> vacancies = new ConcurrentHashMap<>();
 
     public MemoryVacancyRepository() {
         save(new Vacancy(0, "Intern Java Developer", "Описание для интерна"));
@@ -23,7 +27,8 @@ public class MemoryVacancyRepository implements VacancyRepository {
 
     @Override
     public Vacancy save(Vacancy vacancy) {
-        vacancy.setId(nextId++);
+        int id = nextId.incrementAndGet();
+        vacancy.setId(id);
         vacancies.put(vacancy.getId(), vacancy);
         return vacancy;
     }
@@ -35,9 +40,15 @@ public class MemoryVacancyRepository implements VacancyRepository {
 
     @Override
     public boolean update(Vacancy vacancy) {
-        return vacancies.computeIfPresent(vacancy.getId(), (id, oldVacancy) ->
-                new Vacancy(oldVacancy.getId(), vacancy.getTitle(),
-                        vacancy.getDescription())) != null;
+        return vacancies.computeIfPresent(vacancy.getId(), (id, oldVacancy) -> {
+            if (oldVacancy.getVersion() != vacancy.getVersion()) {
+                throw new RuntimeException("Versions are not equal");
+            }
+            Vacancy newVacancy = new Vacancy(oldVacancy.getId(), vacancy.getTitle(),
+                    vacancy.getDescription());
+            newVacancy.setVersion(newVacancy.getVersion() + 1);
+            return newVacancy;
+        }) != null;
     }
 
     @Override
