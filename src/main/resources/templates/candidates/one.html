@@ -50,6 +50,12 @@
                           placeholder="Чем лучше и подробнее вы опишете свой опыт работы,
                                   тем больше шансов, что работодатель обратит внимание на ваше резюме"></textarea>
             </div>
+            <div class="mb-3">
+                <label for="city"><b>Город</b></label>
+                <select class="form-control" id="city" name="cityId">
+                    <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.name}" th:field="*{cityId}" th:selected="${city.id==cityId}"></option>
+                </select>
+            </div>
             <div class="mb-3 row">
                 <div class="col-6"></div>
                 <div class="col-6">

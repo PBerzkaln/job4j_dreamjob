@@ -6,20 +6,30 @@ import java.util.Objects;
 
 public class Vacancy {
     private int id;
+    private int cityId;
     private boolean visible;
     private String title;
     private String description;
     private final LocalDateTime creationDate = LocalDateTime.now();
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MMMM-EEEE-yyyy HH:mm:ss");
 
-    public Vacancy(int id, String title, String description, boolean visible) {
+    public Vacancy(int id, String title, String description, boolean visible, int cityId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.visible = visible;
+        this.cityId = cityId;
     }
 
     public Vacancy() {
+    }
+
+    public int getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(int cityId) {
+        this.cityId = cityId;
     }
 
     public boolean getVisible() {
