@@ -17,12 +17,12 @@ public class MemoryVacancyRepository implements VacancyRepository {
     private final Map<Integer, Vacancy> vacancies = new ConcurrentHashMap<>();
 
     public MemoryVacancyRepository() {
-        save(new Vacancy(0, "Intern Java Developer", "Описание для интерна"));
-        save(new Vacancy(0, "Junior Java Developer", "Описание для джуна"));
-        save(new Vacancy(0, "Junior+ Java Developer", "Описание для джуна+"));
-        save(new Vacancy(0, "Middle Java Developer", "Описание для мидла"));
-        save(new Vacancy(0, "Middle+ Java Developer", "Описание для мидла+"));
-        save(new Vacancy(0, "Senior Java Developer", "Описание для сеньора"));
+        save(new Vacancy(0, "Intern Java Developer", "Описание для интерна", true));
+        save(new Vacancy(0, "Junior Java Developer", "Описание для джуна", true));
+        save(new Vacancy(0, "Junior+ Java Developer", "Описание для джуна+", true));
+        save(new Vacancy(0, "Middle Java Developer", "Описание для мидла", true));
+        save(new Vacancy(0, "Middle+ Java Developer", "Описание для мидла+", true));
+        save(new Vacancy(0, "Senior Java Developer", "Описание для сеньора", true));
     }
 
     @Override
@@ -40,15 +40,9 @@ public class MemoryVacancyRepository implements VacancyRepository {
 
     @Override
     public boolean update(Vacancy vacancy) {
-        return vacancies.computeIfPresent(vacancy.getId(), (id, oldVacancy) -> {
-            if (oldVacancy.getVersion() != vacancy.getVersion()) {
-                throw new RuntimeException("Versions are not equal");
-            }
-            Vacancy newVacancy = new Vacancy(oldVacancy.getId(), vacancy.getTitle(),
-                    vacancy.getDescription());
-            newVacancy.setVersion(newVacancy.getVersion() + 1);
-            return newVacancy;
-        }) != null;
+        return vacancies.computeIfPresent(vacancy.getId(), (id, oldVacancy) ->
+                new Vacancy(oldVacancy.getId(), vacancy.getTitle(), vacancy.getDescription(),
+                        vacancy.getVisible())) != null;
     }
 
     @Override

@@ -6,27 +6,28 @@ import java.util.Objects;
 
 public class Vacancy {
     private int id;
-    private int version;
+    private boolean visible;
     private String title;
     private String description;
     private final LocalDateTime creationDate = LocalDateTime.now();
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MMMM-EEEE-yyyy HH:mm:ss");
 
-    public Vacancy(int id, String title, String description) {
+    public Vacancy(int id, String title, String description, boolean visible) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.visible = visible;
     }
 
     public Vacancy() {
     }
 
-    public int getVersion() {
-        return version;
+    public boolean getVisible() {
+        return visible;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public int getId() {

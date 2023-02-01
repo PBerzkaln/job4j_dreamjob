@@ -40,15 +40,9 @@ public class MemoryCandidateRepository implements CandidateRepository {
 
     @Override
     public boolean update(Candidate candidate) {
-        return candidates.computeIfPresent(candidate.getId(), (id, oldCandidate) -> {
-            if (oldCandidate.getVersion() != candidate.getVersion()) {
-                throw new RuntimeException("Versions are not equal");
-            }
-            Candidate newCandidate = new Candidate(oldCandidate.getId(), candidate.getName(),
-                    candidate.getDescription());
-            newCandidate.setVersion(newCandidate.getVersion() + 1);
-            return newCandidate;
-        }) != null;
+        return candidates.computeIfPresent(candidate.getId(), (id, oldCandidate) ->
+                new Candidate(oldCandidate.getId(), candidate.getName(),
+                        candidate.getDescription())) != null;
     }
 
     @Override
