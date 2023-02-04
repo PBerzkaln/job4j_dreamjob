@@ -17,12 +17,18 @@ public class MemoryVacancyRepository implements VacancyRepository {
     private final Map<Integer, Vacancy> vacancies = new ConcurrentHashMap<>();
 
     public MemoryVacancyRepository() {
-        save(new Vacancy(0, "Intern Java Developer", "Описание для интерна", true, 1));
-        save(new Vacancy(0, "Junior Java Developer", "Описание для джуна", true, 2));
-        save(new Vacancy(0, "Junior+ Java Developer", "Описание для джуна+", true, 3));
-        save(new Vacancy(0, "Middle Java Developer", "Описание для мидла", true, 1));
-        save(new Vacancy(0, "Middle+ Java Developer", "Описание для мидла+", true, 2));
-        save(new Vacancy(0, "Senior Java Developer", "Описание для сеньора", true, 3));
+        save(new Vacancy(0, "Intern Java Developer", "Описание для интерна",
+                true, 1, 0));
+        save(new Vacancy(0, "Junior Java Developer", "Описание для джуна",
+                true, 2, 0));
+        save(new Vacancy(0, "Junior+ Java Developer", "Описание для джуна+",
+                true, 3, 0));
+        save(new Vacancy(0, "Middle Java Developer", "Описание для мидла",
+                true, 1, 0));
+        save(new Vacancy(0, "Middle+ Java Developer", "Описание для мидла+",
+                true, 2, 0));
+        save(new Vacancy(0, "Senior Java Developer", "Описание для сеньора",
+                true, 3, 0));
     }
 
     @Override
@@ -42,7 +48,7 @@ public class MemoryVacancyRepository implements VacancyRepository {
     public boolean update(Vacancy vacancy) {
         return vacancies.computeIfPresent(vacancy.getId(), (id, oldVacancy) ->
                 new Vacancy(oldVacancy.getId(), vacancy.getTitle(), vacancy.getDescription(),
-                        vacancy.getVisible(), vacancy.getCityId())) != null;
+                        vacancy.getVisible(), vacancy.getCityId(), vacancy.getFileId())) != null;
     }
 
     @Override

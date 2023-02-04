@@ -7,21 +7,31 @@ import java.util.Objects;
 public class Vacancy {
     private int id;
     private int cityId;
+    private int fileId;
     private boolean visible;
     private String title;
     private String description;
     private final LocalDateTime creationDate = LocalDateTime.now();
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MMMM-EEEE-yyyy HH:mm:ss");
 
-    public Vacancy(int id, String title, String description, boolean visible, int cityId) {
+    public Vacancy(int id, String title, String description, boolean visible, int cityId, int fileId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.visible = visible;
         this.cityId = cityId;
+        this.fileId = fileId;
     }
 
     public Vacancy() {
+    }
+
+    public int getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(int fileId) {
+        this.fileId = fileId;
     }
 
     public int getCityId() {

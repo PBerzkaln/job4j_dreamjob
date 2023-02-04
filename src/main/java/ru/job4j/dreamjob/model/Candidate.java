@@ -7,19 +7,39 @@ import java.util.Objects;
 public class Candidate {
     private int id;
     private int cityId;
+    private int fileId;
     private String name;
     private String description;
+    private boolean visible;
     private final LocalDateTime creationDate = LocalDateTime.now();
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MMMM-EEEE-yyyy HH:mm:ss");
 
-    public Candidate(int id, String name, String description, int cityId) {
+    public Candidate(int id, String name, String description, int cityId, boolean visible, int fileId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.cityId = cityId;
+        this.visible = visible;
+        this.fileId = fileId;
     }
 
     public Candidate() {
+    }
+
+    public int getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(int fileId) {
+        this.fileId = fileId;
+    }
+
+    public boolean getVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public int getCityId() {
