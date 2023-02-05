@@ -2,9 +2,25 @@ package ru.job4j.dreamjob.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Objects;
 
 public class Vacancy {
+    /**
+     * Дело в том, что модели File и City имели поля с теми же именами,
+     * что и столбцы в БД. С Vacancy ситуация немного сложнее,
+     * поэтому нам нужно написать маппинг в виде мапы COLUMN_MAPPING,
+     * ключи которой это столбцы из БД, а значения названия полей.
+     */
+    public static final Map<String, String> COLUMN_MAPPING = Map.of(
+            "id", "id",
+            "title", "title",
+            "description", "description",
+            "creation_date", "creationDate",
+            "visible", "visible",
+            "city_id", "cityId",
+            "file_id", "fileId"
+    );
     private int id;
     private int cityId;
     private int fileId;
