@@ -6,10 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.dreamjob.dto.FileDto;
+import ru.job4j.dreamjob.model.User;
 import ru.job4j.dreamjob.model.Vacancy;
 
 import ru.job4j.dreamjob.service.CityService;
 import ru.job4j.dreamjob.service.VacancyService;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/vacancies")
@@ -24,25 +27,38 @@ public class VacancyController {
         this.cityService = cityService;
     }
 
+    private void getUser(Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
+        if (user == null) {
+            user = new User();
+            user.setName("Гость");
+        }
+        model.addAttribute("user", user);
+    }
+
     @GetMapping
-    public String getAll(Model model) {
+    public String getAll(Model model, HttpSession session) {
         model.addAttribute("vacancies", vacancyService.findAll());
+        getUser(model, session);
         return "vacancies/list";
     }
 
     @GetMapping("/create")
-    public String getCreationPage(Model model) {
+    public String getCreationPage(Model model, HttpSession session) {
         model.addAttribute("cities", cityService.findAll());
+        getUser(model, session);
         return "vacancies/create";
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model) {
+    public String create(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model,
+                         HttpSession session) {
         try {
             vacancyService.save(vacancy, new FileDto(file.getOriginalFilename(), file.getBytes()));
             return "redirect:/vacancies";
         } catch (Exception exception) {
             model.addAttribute("message", exception.getMessage());
+            getUser(model, session);
             return "errors/404";
         }
     }
@@ -56,14 +72,16 @@ public class VacancyController {
      * @return
      */
     @GetMapping("/{id}")
-    public String getById(Model model, @PathVariable int id) {
+    public String getById(Model model, @PathVariable int id, HttpSession session) {
         var vacancyOptional = vacancyService.findById(id);
         if (vacancyOptional.isEmpty()) {
             model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
+            getUser(model, session);
             return "errors/404";
         }
         model.addAttribute("cities", cityService.findAll());
         model.addAttribute("vacancy", vacancyOptional.get());
+        getUser(model, session);
         return "vacancies/one";
     }
 
@@ -81,18 +99,21 @@ public class VacancyController {
      * @return
      */
     @PostMapping("/update")
-    public String update(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model) {
+    public String update(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model,
+                         HttpSession session) {
         try {
             var isUpdated = vacancyService.update(vacancy,
                     new FileDto(file.getOriginalFilename(), file.getBytes()));
             if (!isUpdated) {
                 model.addAttribute("message",
                         "Вакансия с указанным идентификатором не найдена");
+                getUser(model, session);
                 return "errors/404";
             }
             return "redirect:/vacancies";
         } catch (Exception exception) {
             model.addAttribute("message", exception.getMessage());
+            getUser(model, session);
             return "errors/404";
         }
     }
@@ -107,10 +128,11 @@ public class VacancyController {
      * @return
      */
     @GetMapping("/delete/{id}")
-    public String delete(Model model, @PathVariable int id) {
+    public String delete(Model model, @PathVariable int id, HttpSession session) {
         var isDeleted = vacancyService.deleteById(id);
         if (!isDeleted) {
             model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
+            getUser(model, session);
             return "errors/404";
         }
         return "redirect:/vacancies";
